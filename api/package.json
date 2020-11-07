@@ -3,12 +3,51 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./dest/server.js",
+    "build": "babel src -d dest --copy-files",
+    "clean": "rimraf ./dest",
+    "build:all": "run-s clean build",
+    "build:run": "run-s build:all start",
+    "start:dev": "nodemon  --exec npm run build:run",
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed:all"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "morgan": "~1.9.1"
+    "bcrypt": "^5.0.0",
+    "change-case": "^4.1.1",
+    "cookie-parser": "~1.4.5",
+    "cors": "^2.8.5",
+    "debug": "~4.2.0",
+    "express": "~4.17.1",
+    "express-winston": "^4.0.5",
+    "helmet": "^4.1.1",
+    "http-errors": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
+    "multer": "^1.4.2",
+    "mysql2": "^2.2.5",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.4.2",
+    "pg-hstore": "^2.3.3",
+    "sequelice-query": "^1.0.3",
+    "sequelize": "^6.3.5",
+    "sequelize-paginate": "^1.1.6",
+    "slugify": "^1.4.5",
+    "uuid": "^8.3.1",
+    "winston": "^3.3.3",
+    "yup": "^0.29.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/register": "^7.12.1",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "nodemon": "^2.0.6",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "sequelize-cli": "^6.2.0"
   }
 }
