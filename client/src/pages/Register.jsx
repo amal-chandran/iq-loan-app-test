@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { register } from '../store/actions/appActions';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { FieldControl } from './../components/FieldControl';
 import { Button, Icon, Input } from 'rsuite';
 import { Link } from '@reach/router';
+import { register, clearErrors } from './../store/slices/auth.slice';
+import { navigate } from '@reach/router';
+import { unwrapResult } from '@reduxjs/toolkit';
+
 const registerSchema = yup.object().shape({
-  name: yup.string().required(),
+  name: yup.string().required().min(4),
   email: yup.string().email().required(),
-  phone: yup.string().required(),
-  password: yup.string().required(),
+  password: yup.string().required().min(8),
 });
 
 export class Login extends Component {
@@ -26,12 +28,30 @@ export class Login extends Component {
                 Start a new loan book !
               </div>
             </div>
+            {this.props.error ? (
+              <div className='t-text-red-500 t-bg-red-200 t-p-2 t-rounded t-mb-2'>
+                {this.props.error.message}
+              </div>
+            ) : (
+              ''
+            )}
             <Formik
               validationSchema={registerSchema}
               onSubmit={(values) => {
-                // this.props.register(values);
+                this.props
+                  .register(values)
+                  .then(unwrapResult)
+
+                  .then(() => {
+                    navigate('/login');
+                  })
+                  .catch(() => {
+                    setTimeout(() => {
+                      this.props.clearErrors();
+                    }, 4000);
+                  });
               }}
-              initialValues={{ name: '', email: '', phone: '', password: '' }}
+              initialValues={{ name: '', email: '', password: '' }}
             >
               <Form>
                 <div className='t-pb-2'>
@@ -43,15 +63,10 @@ export class Login extends Component {
                     placeholder='Name'
                     name='name'
                   />
-                </div>
-                <div className='t-pb-2'>
-                  <label className='t-pb-2 t-block' htmlFor='phone'>
-                    Phone
-                  </label>
-                  <FieldControl
-                    component={Input}
-                    name='phone'
-                    placeholder='Phone'
+                  <ErrorMessage
+                    name='name'
+                    component='div'
+                    className='t-text-red-400 t-py-2'
                   />
                 </div>
                 <div className='t-pb-2'>
@@ -63,6 +78,11 @@ export class Login extends Component {
                     placeholder='Email'
                     name='email'
                   />
+                  <ErrorMessage
+                    name='email'
+                    component='div'
+                    className='t-text-red-400 t-py-2'
+                  />
                 </div>
                 <div className='t-pb-2'>
                   <label className='t-pb-2 t-block' htmlFor='password'>
@@ -73,6 +93,11 @@ export class Login extends Component {
                     type='password'
                     name='password'
                     placeholder='Password'
+                  />
+                  <ErrorMessage
+                    name='password'
+                    component='div'
+                    className='t-text-red-400 t-py-2'
                   />
                 </div>
                 <div className='t-mt-2 t-flex t-items-center t-justify-between'>
@@ -92,10 +117,13 @@ export class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  error: state.auth.error,
+});
 
 const mapDispatchToProps = {
-  // register
+  register,
+  clearErrors,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

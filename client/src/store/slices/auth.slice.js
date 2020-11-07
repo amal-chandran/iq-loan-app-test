@@ -44,8 +44,7 @@ const auth = createSlice({
       ...state,
       isAuthenticated: true,
       loading: false,
-
-      ...action.payload,
+      ...action.payload.data,
     }),
     // Register
     [register.pending]: (state, action) => ({
