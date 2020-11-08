@@ -5,6 +5,9 @@ import {
   transformValue,
   transformKey,
 } from './../../helpers/transform-query.helper';
+import { Op } from 'sequelize';
+import { toSequelizeQuery } from './../../helpers/access-control.helper';
+import { ForbiddenError, subject } from '@casl/ability';
 export default class BaseService {
   constructor(model, includes = []) {
     this.model = model;
@@ -31,28 +34,42 @@ export default class BaseService {
         optFilter: { transformValue, transformKey },
       },
     });
-    console.log(where);
+
+    const accessControlQuery = toSequelizeQuery(
+      req.ability,
+      this.model.model_name,
+      'list'
+    );
+
+    console.log(accessControlQuery);
+
     return await this.model.paginate({
       include,
       paginate: perPage,
       page,
-      where,
+      where: { [Op.and]: [accessControlQuery, where] },
       order,
     });
   }
 
-  async get(id) {
+  async get(id, ability) {
     const result = await this.model.findOne({
+      // where: { [Op.and]: [id, accessControlQuery] },
       where: { id },
       include: this.includes,
     });
 
     if (isEmpty(result)) throw new Error(`No ${this.model.name} found`);
 
+    ForbiddenError.from(ability).throwUnlessCan(
+      'show',
+      subject(this.model.model_name, result)
+    );
+
     return result;
   }
 
-  async getBySlug(slug) {
+  async getBySlug(slug, ability) {
     const result = await this.model.findOne({
       where: { slug },
       include: this.includes,
@@ -60,10 +77,20 @@ export default class BaseService {
 
     if (isEmpty(result)) throw new Error(`No ${this.model.name} found`);
 
+    ForbiddenError.from(ability).throwUnlessCan(
+      'show',
+      subject(this.model.model_name, result)
+    );
+
     return result;
   }
 
   async create(data) {
+    ForbiddenError.from(ability).throwUnlessCan(
+      'create',
+      subject(this.model.model_name, data)
+    );
+
     const { id } = await this.model.create(data);
 
     let result = await this.model.findOne({
@@ -74,13 +101,18 @@ export default class BaseService {
     return result;
   }
 
-  async update(id, data) {
+  async update(id, data, ability) {
     let result = await this.model.findOne({
       where: { id },
       include: this.includes,
     });
 
     if (isEmpty(result)) throw new Error(`No ${this.model.name} found`);
+
+    ForbiddenError.from(ability).throwUnlessCan(
+      'edit',
+      subject(this.model.model_name, result)
+    );
 
     result = assign(result, data);
 
@@ -94,6 +126,11 @@ export default class BaseService {
     });
 
     if (isEmpty(result)) throw new Error(`No ${this.model.name} found`);
+
+    ForbiddenError.from(ability).throwUnlessCan(
+      'delete',
+      subject(this.model.model_name, result)
+    );
 
     return await result.destroy();
   }

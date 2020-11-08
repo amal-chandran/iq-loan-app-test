@@ -1,10 +1,27 @@
+import { ForbiddenError, subject } from '@casl/ability';
+import { assign, isEmpty } from 'lodash';
 import BaseService from './base.service';
-import sQuery from 'sequelice-query';
-import { Loans } from '../models';
-import { assign, has, isEmpty, omit } from 'lodash';
 
 export default class LoansService extends BaseService {
   constructor(model, includes) {
     super(model, includes);
+  }
+
+  async setStatus(id, status, ability) {
+    let result = await this.model.findOne({
+      where: { id },
+      include: this.includes,
+    });
+
+    if (isEmpty(result)) throw new Error(`No ${this.model.name} found`);
+
+    ForbiddenError.from(ability).throwUnlessCan(
+      'set-status',
+      subject(this.model.model_name, result)
+    );
+
+    result = assign(result, { status });
+
+    return await result.save();
   }
 }

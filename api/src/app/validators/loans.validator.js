@@ -19,3 +19,7 @@ export const LoansUpdateSchema = yup.object().shape({
   interest_type: yup.string().required(),
   createdfor: yup.number().required(),
 });
+
+export const LoansStatusSchema = yup.object().shape({
+  status: yup.string().required(),
+});

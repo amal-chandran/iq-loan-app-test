@@ -30,7 +30,7 @@ router.post(
 );
 router.put(
   '/:id',
-  protect('update', 'Users'),
+  protect('edit', 'Users'),
   executeAsync(UsersInstance.update, [UsersUpdateSchema, UsersParamSchema])
 );
 router.delete(

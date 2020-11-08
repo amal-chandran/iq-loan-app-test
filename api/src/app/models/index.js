@@ -33,7 +33,8 @@ fs.readdirSync(__dirname)
       Sequelize.DataTypes
     );
     paginate(model);
-    db[pascalCase(model.name)] = model;
+    model.model_name = pascalCase(model.name);
+    db[model.model_name] = model;
   });
 
 Object.keys(db).forEach((modelName) => {

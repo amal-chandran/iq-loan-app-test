@@ -11,6 +11,10 @@ export default class LoansController extends BaseController {
     super(service);
   }
 
+  setStatus = async ({ id, status }, req) => {
+    return await this.service.setStatus(id, status, req.ability);
+  };
+
   getParams = (data, req) => ({
     ...data,
     createdby: req.userId,

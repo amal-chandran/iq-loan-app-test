@@ -3,20 +3,25 @@ export default {
     can('manage', 'all');
     cannot('edit', 'Loans');
   },
-  agent(user, { can }) {
-    can('list', 'Users');
-    can('show', 'Users');
-    can('create', 'Users');
-    can('edit', 'Users');
-    can('delete', 'Users');
+  agent(user, { can, cannot }) {
+    can('list', 'Users', { role: 'customer' });
+    can('show', 'Users', { role: 'customer' });
+    can('create', 'Users', { role: 'customer' });
+    can('edit', 'Users', { role: 'customer' });
+    cannot('set-role', 'Users');
+    can('delete', 'Users', { role: 'customer' });
 
     can('list', 'Loans');
     can('show', 'Loans');
     can('create', 'Loans');
-    can('edit', 'Loans', { status: { $not: 'approved' } });
+    can('edit', 'Loans', { status: { $not: 'APPROVED' } });
+    can('delete', 'Loans', {
+      status: { $eq: 'NEW' },
+      createdby: { $eq: user.id },
+    });
   },
   customer(user, { can }) {
-    can('list', 'Loans', { createdFor: user.id });
-    can('show', 'Loans', { createdFor: user.id });
+    can('list', 'Loans', { createdfor: user.id });
+    can('show', 'Loans', { createdfor: user.id });
   },
 };

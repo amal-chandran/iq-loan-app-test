@@ -5,6 +5,7 @@ import {
   LoansSchema,
   LoansParamSchema,
   LoansUpdateSchema,
+  LoansStatusSchema,
 } from '../validators/loans.validator';
 import protect from '../middlewares/protect';
 const router = express.Router();
@@ -23,14 +24,23 @@ router.post(
   protect('create', 'Loans'),
   executeAsync(LoansInstance.store, LoansSchema)
 );
+
+router.patch(
+  '/:id/set-status',
+  protect('set-status', 'Loans'),
+  executeAsync(LoansInstance.setStatus, [LoansStatusSchema, LoansParamSchema])
+);
+
 router.put(
   '/:id',
-  protect('update', 'Loans'),
+  protect('edit', 'Loans'),
   executeAsync(LoansInstance.update, [LoansUpdateSchema, LoansParamSchema])
 );
+
 router.delete(
   '/:id',
   protect('delete', 'Loans'),
   executeAsync(LoansInstance.destroy, LoansParamSchema)
 );
+
 export default router;
