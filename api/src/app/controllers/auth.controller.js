@@ -1,6 +1,8 @@
 import { Users } from './../models';
 import pick from 'lodash/pick';
 import AuthService from './../services/auth.service';
+import { defineAbilityFor } from './../../helpers/access-control.helper';
+import { packRules } from '@casl/ability/extra';
 export default class AuthController {
   constructor() {
     this.service = new AuthService(Users);
@@ -8,8 +10,13 @@ export default class AuthController {
 
   login = async ({ email, password }) => {
     const { token, user } = await this.service.login(email, password);
-
-    return { token, user: pick(user, ['id', 'name', 'email', 'role']) };
+    const userAbility = defineAbilityFor(user);
+    console.log(userAbility);
+    return {
+      token,
+      user: pick(user, ['id', 'name', 'email', 'role']),
+      ability: userAbility,
+    };
   };
 
   register = async (data) => {

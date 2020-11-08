@@ -2,12 +2,7 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  class Loan extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class Loans extends Model {
     static associate(models) {
       this.belongsTo(models.Users, {
         as: 'createdBy',
@@ -20,7 +15,7 @@ module.exports = (sequelize) => {
     }
   }
 
-  Loan.init(
+  Loans.init(
     {
       tenure: DataTypes.INTEGER,
       status: {
@@ -29,7 +24,11 @@ module.exports = (sequelize) => {
       },
       status_dates: {
         type: DataTypes.JSONB,
-        defaultValue: { new: new Date(), rejected: null, approved: null },
+        defaultValue: {
+          new: new Date().toISOString(),
+          rejected: null,
+          approved: null,
+        },
       },
       interest: DataTypes.DECIMAL,
       principal_amount: DataTypes.BIGINT,
@@ -44,5 +43,5 @@ module.exports = (sequelize) => {
     }
   );
 
-  return Loan;
+  return Loans;
 };

@@ -1,7 +1,10 @@
 import isEmpty from 'lodash/isEmpty';
 import assign from 'lodash/assign';
 import sQuery from 'sequelice-query';
-
+import {
+  transformValue,
+  transformKey,
+} from './../../helpers/transform-query.helper';
 export default class BaseService {
   constructor(model, includes = []) {
     this.model = model;
@@ -25,9 +28,10 @@ export default class BaseService {
       model: this.model,
       configs: {
         include: this.includes,
+        optFilter: { transformValue, transformKey },
       },
     });
-
+    console.log(where);
     return await this.model.paginate({
       include,
       paginate: perPage,
