@@ -43,7 +43,7 @@ const LoanForm = ({
               <ControlLabel>Principal Amount</ControlLabel>
               <FieldPicker
                 className='tw-my-2'
-                prefix='$'
+                prefix='₹'
                 component={InputNumber}
                 name='principal_amount'
                 placeholder='eg: 100000'

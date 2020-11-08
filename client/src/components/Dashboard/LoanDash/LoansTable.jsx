@@ -4,7 +4,7 @@ import { Icon, IconButton, Table, Avatar, Tag } from 'rsuite';
 import { ModelAction } from '../../Table/ActionButtons';
 import { ActionCell, AvatarCell, NestedCell } from '../../Table/TableCells';
 import { loadList } from '../../../store/slices/loans.slice';
-import { get, omit, toLower, upperFirst } from 'lodash';
+import { get, omit, toLower, toNumber, upperFirst } from 'lodash';
 import classNames from 'classnames';
 const { Column, Cell, HeaderCell, Pagination } = Table;
 
@@ -20,12 +20,15 @@ const interestTypeColors = {
 };
 
 const LoansTable = ({ loadList, loansList, loansListMeta, loading }) => {
-  const [page, setPage] = useState(1);
   const [displayLength, setDisplayLength] = useState(10);
 
   useEffect(() => {
+    loadList({ perPage: displayLength, page: 1 });
+  }, [loadList, displayLength]);
+
+  const setPage = (page) => {
     loadList({ perPage: displayLength, page });
-  }, [loadList, displayLength, page]);
+  };
 
   const handleChangeLength = (dataKey) => {
     setDisplayLength(dataKey);
@@ -42,7 +45,10 @@ const LoansTable = ({ loadList, loansList, loansListMeta, loading }) => {
 
         <Column width={120} fixed>
           <HeaderCell>Principal Amount</HeaderCell>
-          <Cell dataKey='principal_amount' />
+          <NestedCell
+            dataKey='principal_amount'
+            formatCell={(rowData) => `₹${rowData['principal_amount']}`}
+          />
         </Column>
 
         <Column width={120}>
@@ -131,7 +137,7 @@ const LoansTable = ({ loadList, loansList, loansListMeta, loading }) => {
             label: 20,
           },
         ]}
-        activePage={page}
+        activePage={toNumber(loansListMeta.page)}
         displayLength={displayLength}
         total={loansListMeta.total}
         onChangePage={setPage}

@@ -4,17 +4,20 @@ import { Icon, IconButton, Table, Avatar } from 'rsuite';
 import { ModelAction } from './../../Table/ActionButtons';
 import { ActionCell, AvatarCell, NestedCell } from './../../Table/TableCells';
 import { loadList } from './../../../store/slices/users.slice';
-import { omit, upperFirst } from 'lodash';
+import { omit, toNumber, upperFirst } from 'lodash';
 
 const { Column, Cell, HeaderCell, Pagination } = Table;
 
 const UsersTable = ({ loadList, usersList, usersListMeta, loading }) => {
-  const [page, setPage] = useState(1);
   const [displayLength, setDisplayLength] = useState(10);
 
   useEffect(() => {
+    loadList({ perPage: displayLength, page: 1 });
+  }, [loadList, displayLength]);
+
+  const setPage = (page) => {
     loadList({ perPage: displayLength, page });
-  }, [loadList, displayLength, page]);
+  };
 
   const handleChangeLength = (dataKey) => {
     setDisplayLength(dataKey);
@@ -88,7 +91,7 @@ const UsersTable = ({ loadList, usersList, usersListMeta, loading }) => {
             label: 20,
           },
         ]}
-        activePage={page}
+        activePage={toNumber(usersListMeta.page)}
         displayLength={displayLength}
         total={usersListMeta.total}
         onChangePage={setPage}
