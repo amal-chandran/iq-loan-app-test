@@ -10,12 +10,12 @@ export default class BaseController {
 
   index = async ({ page, perPage }, req) => {
     const response = await this.service.getAll(req, page, perPage);
-    return toPaginatedResponse(response);
+    return toPaginatedResponse(response, page, perPage);
   };
 
   picker = async ({ page, perPage, picker }, req) => {
     const response = await this.service.getAll(req, page, perPage);
-    return toPickerResponse(response, picker);
+    return toPickerResponse(response, picker, page, perPage);
   };
 
   show = async ({ id }) => {

@@ -1,10 +1,13 @@
 import { get, isNil, pick } from 'lodash';
 
-export const toPaginatedResponse = (result) => () => {
-  return { data: result.docs, meta: pick(result, ['total', 'pages']) };
+export const toPaginatedResponse = (result, page, perPage) => () => {
+  return {
+    data: result.docs,
+    meta: { page, perPage, ...pick(result, ['total', 'pages']) },
+  };
 };
 
-export const toPickerResponse = (result, picker) => () => {
+export const toPickerResponse = (result, picker, page, perPage) => () => {
   if (!isNil(picker)) {
     const pickerObj = JSON.parse(picker);
 
@@ -13,7 +16,10 @@ export const toPickerResponse = (result, picker) => () => {
       value: get(item, pickerObj['value']),
     }));
 
-    return { data, meta: pick(result, ['total', 'pages']) };
+    return {
+      data,
+      meta: { page, perPage, ...pick(result, ['total', 'pages']) },
+    };
   } else {
     return { data: [], meta: { total: 0, pages: 0 } };
   }
