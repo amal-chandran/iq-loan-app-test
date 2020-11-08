@@ -3,8 +3,8 @@ import { requestJsonAPI } from '../../helpers/api.helper';
 
 export const loadList = createAsyncThunk(
   'loans/loadList',
-  async (data, thunk) => {
-    return await requestJsonAPI(thunk, 'GET', 'loans');
+  async ({ perPage, page }, thunk) => {
+    return await requestJsonAPI(thunk, 'GET', 'loans', null, { perPage, page });
   }
 );
 export const loadLoan = createAsyncThunk(
@@ -39,6 +39,7 @@ const loans = createSlice({
   initialState: {
     loan: {},
     loansList: [],
+    loansListMeta: { total: 0, page: 0 },
     loading: false,
     error: null,
   },
@@ -62,6 +63,7 @@ const loans = createSlice({
       ...state,
       loading: false,
       loansList: action.payload.data,
+      loansListMeta: action.payload.meta,
     }),
     // loadList
     [loadLoan.pending]: (state, action) => ({

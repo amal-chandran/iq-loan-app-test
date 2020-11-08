@@ -19,13 +19,13 @@ const interestTypeColors = {
   FIXED: 't-bg-orange-500',
 };
 
-const LoansTable = ({ loadList, loansList, loading }) => {
+const LoansTable = ({ loadList, loansList, loansListMeta, loading }) => {
   const [page, setPage] = useState(1);
   const [displayLength, setDisplayLength] = useState(10);
 
   useEffect(() => {
-    loadList();
-  }, [loadList]);
+    loadList({ perPage: displayLength, page });
+  }, [loadList, displayLength, page]);
 
   const handleChangeLength = (dataKey) => {
     setDisplayLength(dataKey);
@@ -34,7 +34,7 @@ const LoansTable = ({ loadList, loansList, loading }) => {
 
   return (
     <div>
-      <Table height={420} data={loansList} loading={loading}>
+      <Table height={520} data={loansList} loading={loading}>
         <Column width={50} align='center' fixed>
           <HeaderCell>Id</HeaderCell>
           <Cell dataKey='id' />
@@ -133,7 +133,7 @@ const LoansTable = ({ loadList, loansList, loading }) => {
         ]}
         activePage={page}
         displayLength={displayLength}
-        total={loansList.length}
+        total={loansListMeta.total}
         onChangePage={setPage}
         onChangeLength={handleChangeLength}
       />
@@ -143,6 +143,7 @@ const LoansTable = ({ loadList, loansList, loading }) => {
 
 const mapStateToProps = (state) => ({
   loansList: state.loans.loansList,
+  loansListMeta: state.loans.loansListMeta,
   loading: state.loans.loading,
 });
 

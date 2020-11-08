@@ -3,8 +3,8 @@ import { requestJsonAPI } from '../../helpers/api.helper';
 
 export const loadList = createAsyncThunk(
   'users/loadList',
-  async (data, thunk) => {
-    return await requestJsonAPI(thunk, 'GET', 'users');
+  async ({ perPage, page }, thunk) => {
+    return await requestJsonAPI(thunk, 'GET', 'users', null, { perPage, page });
   }
 );
 
@@ -50,6 +50,7 @@ const users = createSlice({
   initialState: {
     user: {},
     usersList: [],
+    usersListMeta: { total: 0, page: 0 },
     usersPickerList: [],
     loading: false,
     error: null,
@@ -74,6 +75,7 @@ const users = createSlice({
       ...state,
       loading: false,
       usersList: action.payload.data,
+      usersListMeta: action.payload.meta,
     }),
     // loadList
     [loadPickerList.pending]: (state, action) => ({

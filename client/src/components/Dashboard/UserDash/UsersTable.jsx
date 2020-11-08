@@ -8,13 +8,13 @@ import { omit, upperFirst } from 'lodash';
 
 const { Column, Cell, HeaderCell, Pagination } = Table;
 
-const UsersTable = ({ loadList, usersList, loading }) => {
+const UsersTable = ({ loadList, usersList, usersListMeta, loading }) => {
   const [page, setPage] = useState(1);
   const [displayLength, setDisplayLength] = useState(10);
 
   useEffect(() => {
-    loadList();
-  }, [loadList]);
+    loadList({ perPage: displayLength, page });
+  }, [loadList, displayLength, page]);
 
   const handleChangeLength = (dataKey) => {
     setDisplayLength(dataKey);
@@ -23,7 +23,7 @@ const UsersTable = ({ loadList, usersList, loading }) => {
 
   return (
     <div>
-      <Table height={420} data={usersList} loading={loading}>
+      <Table height={520} data={usersList} loading={loading}>
         <Column width={50} align='center' fixed>
           <HeaderCell>Id</HeaderCell>
           <Cell dataKey='id' />
@@ -90,7 +90,7 @@ const UsersTable = ({ loadList, usersList, loading }) => {
         ]}
         activePage={page}
         displayLength={displayLength}
-        total={usersList.length}
+        total={usersListMeta.total}
         onChangePage={setPage}
         onChangeLength={handleChangeLength}
       />
@@ -100,6 +100,7 @@ const UsersTable = ({ loadList, usersList, loading }) => {
 
 const mapStateToProps = (state) => ({
   usersList: state.users.usersList,
+  usersListMeta: state.users.usersListMeta,
   loading: state.users.loading,
 });
 
