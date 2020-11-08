@@ -1,7 +1,11 @@
-import { AbilityBuilder } from '@casl/ability';
+import { AbilityBuilder, Ability } from '@casl/ability';
 import rolePermissions from './../configs/access-control';
 
 export function defineAbilityFor(user) {
+  return new Ability(defineRulesFor(user));
+}
+
+export function defineRulesFor(user) {
   const builder = new AbilityBuilder();
 
   if (typeof rolePermissions[user.role] === 'function') {
@@ -10,5 +14,5 @@ export function defineAbilityFor(user) {
     throw new Error(`Trying to use unknown role "${user.role}"`);
   }
 
-  return builder.build();
+  return builder.rules;
 }
