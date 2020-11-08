@@ -1,10 +1,21 @@
+import { isNil } from 'lodash';
+import {
+  toPaginatedResponse,
+  toPickerResponse,
+} from './../../helpers/response.helper';
 export default class BaseController {
   constructor(service) {
     this.service = service;
   }
 
-  index = async ({ page, perPage }) => {
-    return await this.service.getAll(page, perPage);
+  index = async ({ page, perPage }, req) => {
+    const response = await this.service.getAll(req, page, perPage);
+    return toPaginatedResponse(response);
+  };
+
+  picker = async ({ page, perPage, picker }, req) => {
+    const response = await this.service.getAll(req, page, perPage);
+    return toPickerResponse(response, picker);
   };
 
   show = async ({ id }) => {

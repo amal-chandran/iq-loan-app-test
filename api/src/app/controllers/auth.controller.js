@@ -9,13 +9,13 @@ export default class AuthController {
   login = async ({ email, password }) => {
     const { token, user } = await this.service.login(email, password);
 
-    return { token, user: pick(user, ['name', 'email']) };
+    return { token, user: pick(user, ['id', 'name', 'email', 'role']) };
   };
 
   register = async (data) => {
     const { token, user } = await this.service.register(data);
 
-    return { token, user: pick(user, ['name', 'email']) };
+    return { token, user: pick(user, ['id', 'name', 'email', 'role']) };
   };
 
   logout() {

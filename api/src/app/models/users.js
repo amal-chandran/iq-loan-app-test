@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_KEY, SALT_ROUNDS } = require('../../configs/app');
 const { Model } = require('sequelize');
+const { pick } = require('lodash');
 
 module.exports = (sequelize, DataTypes) => {
   class Users extends Model {
@@ -16,12 +17,17 @@ module.exports = (sequelize, DataTypes) => {
 
     generateJWToken() {
       return new Promise((resolve, reject) => {
-        jwt.sign({ user: this._id }, JWT_KEY, {}, function (err, token) {
-          if (err) {
-            reject(err);
+        jwt.sign(
+          { user: pick(this, ['id', 'name', 'role', 'email']) },
+          JWT_KEY,
+          {},
+          function (err, token) {
+            if (err) {
+              reject(err);
+            }
+            resolve(token);
           }
-          resolve(token);
-        });
+        );
       });
     }
   }
@@ -38,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
 
       role: {
         type: DataTypes.STRING,
+        defaultValue: 'customer',
       },
 
       password: {

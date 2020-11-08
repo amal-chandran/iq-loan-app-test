@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import flatten from 'lodash/flatten';
 import merge from 'lodash/merge';
 import assign from 'lodash/assign';
+import { isFunction } from 'lodash';
 
 export function execute(controller, validator) {
   return async function (req, res, next) {
@@ -12,9 +13,9 @@ export function execute(controller, validator) {
         data = await validator.validate(req.body, { stripUnknown: true });
       }
 
-      const responce = controller(data);
+      const response = controller(data);
 
-      res.send({ success: true, data: responce });
+      res.send({ success: true, data: response });
     } catch (error) {
       res.send({ success: false, error: { message: error.message } });
     }
@@ -42,9 +43,13 @@ export function executeAsync(controller, validator) {
         }
       }
 
-      const responce = await controller(data, req, res);
+      const response = await controller(data, req, res);
 
-      res.send({ success: true, data: responce });
+      if (isFunction(response)) {
+        res.send({ success: true, ...response() });
+      } else {
+        res.send({ success: true, data: response });
+      }
     } catch (error) {
       console.log(error);
       res.send({ success: false, error: { message: error.message } });

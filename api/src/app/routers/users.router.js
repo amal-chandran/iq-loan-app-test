@@ -6,18 +6,36 @@ import {
   UsersParamSchema,
   UsersUpdateSchema,
 } from './../validators/users.validator';
-
+import protect from './../middlewares/protect';
 const router = express.Router();
 
 const UsersInstance = new UsersController();
 
-router.get('/', executeAsync(UsersInstance.index));
-router.get('/:id(\\d+)', executeAsync(UsersInstance.show, UsersParamSchema));
+router.get('/', protect('list', 'Users'), executeAsync(UsersInstance.index));
+router.get(
+  '/picker',
+  protect('list', 'Users'),
+  executeAsync(UsersInstance.picker)
+);
+router.get(
+  '/:id(\\d+)',
+  protect('show', 'Users'),
+  executeAsync(UsersInstance.show, UsersParamSchema)
+);
 
-router.post('/', executeAsync(UsersInstance.store, UsersSchema));
+router.post(
+  '/',
+  protect('create', 'Users'),
+  executeAsync(UsersInstance.store, UsersSchema)
+);
 router.put(
   '/:id',
+  protect('update', 'Users'),
   executeAsync(UsersInstance.update, [UsersUpdateSchema, UsersParamSchema])
 );
-router.delete('/:id', executeAsync(UsersInstance.destroy, UsersParamSchema));
+router.delete(
+  '/:id',
+  protect('delete', 'Users'),
+  executeAsync(UsersInstance.destroy, UsersParamSchema)
+);
 export default router;

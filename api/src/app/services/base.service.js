@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import assign from 'lodash/assign';
+import sQuery from 'sequelice-query';
 
 export default class BaseService {
   constructor(model, includes = []) {
@@ -14,11 +15,25 @@ export default class BaseService {
     this.delete = this.delete.bind(this);
   }
 
-  async getAll(page, perPage) {
-    return await this.model.findAll({
-      include: this.includes,
-      limit: perPage,
-      offset: page,
+  async getAll(req, page, perPage) {
+    const {
+      include,
+      queryFilter: where,
+      querySort: order,
+    } = await sQuery.generate({
+      req,
+      model: this.model,
+      configs: {
+        include: this.includes,
+      },
+    });
+
+    return await this.model.paginate({
+      include,
+      paginate: perPage,
+      page,
+      where,
+      order,
     });
   }
 
@@ -45,7 +60,14 @@ export default class BaseService {
   }
 
   async create(data) {
-    return await this.model.create(data);
+    const { id } = await this.model.create(data);
+
+    let result = await this.model.findOne({
+      where: { id },
+      include: this.includes,
+    });
+
+    return result;
   }
 
   async update(id, data) {

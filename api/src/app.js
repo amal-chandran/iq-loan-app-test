@@ -9,6 +9,8 @@ import { loggerMiddleware, logger } from './bootstrap/logger';
 import { executeAsync } from './helpers/app.helper';
 import { APP_BASE } from './configs/app';
 import { sequelize } from './app/models';
+import userAuth from './app/middlewares/user-auth';
+import errorHandle from './app/middlewares/error-handle';
 
 const app = express();
 
@@ -30,6 +32,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(APP_BASE, 'public')));
 app.use('/uploads', express.static(path.join(APP_BASE, 'uploads')));
 
+app.use(userAuth);
+
 app.use('/api/v1/', appRouter);
 
 app.use(
@@ -38,5 +42,6 @@ app.use(
     throw new Error('404');
   })
 );
+app.use(errorHandle);
 
 module.exports = app;
