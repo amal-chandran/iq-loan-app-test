@@ -4,9 +4,142 @@ import { Button, Icon } from 'rsuite';
 import LoansTable from '../../components/Dashboard/LoanDash/LoansTable';
 import LoanModels from './../../components/Dashboard/LoanDash/LoanModels';
 import { openModel } from './../../store/slices/model.slice';
-import { loadList } from './../../store/slices/loans.slice';
+import {
+  clearFilters,
+  loadList,
+  setFilters,
+} from './../../store/slices/loans.slice';
+import { loadPickerList } from './../../store/slices/users.slice';
+import DynamicFilterForm from './../../components/DynamicFilterForm';
 
-const LoanDash = ({ openModel, loadList }) => {
+const LoanDash = ({
+  openModel,
+  loadList,
+  loadPickerList,
+  pickerLoading,
+  usersPickerList,
+  setFilters,
+  clearFilters,
+}) => {
+  const dynamicSpec = [
+    {
+      name: 'principal_amount',
+      typeField: 'FieldPicker',
+      initialValue: '',
+      placeholder: 'Principal Amount',
+      component: 'InputNumber',
+      extraProps: {},
+    },
+    {
+      name: 'tenure',
+      typeField: 'FieldPicker',
+      initialValue: '',
+      placeholder: 'Tenure',
+      component: 'InputNumber',
+      extraProps: {},
+    },
+
+    {
+      name: 'interest',
+      typeField: 'FieldPicker',
+      initialValue: '',
+      placeholder: 'Interest',
+      component: 'InputNumber',
+      extraProps: {},
+    },
+
+    {
+      name: 'interest_type',
+      typeField: 'FieldPicker',
+      initialValue: '',
+      placeholder: 'Interest Type',
+      component: 'SelectPicker',
+      extraProps: {
+        block: true,
+        searchable: false,
+        data: [
+          {
+            label: 'Fixed',
+            value: 'FIXED',
+          },
+          {
+            label: 'Reducing',
+            value: 'REDUCING',
+          },
+        ],
+      },
+    },
+    {
+      name: 'status',
+      typeField: 'FieldPicker',
+      initialValue: '',
+      placeholder: 'Status',
+      component: 'SelectPicker',
+      extraProps: {
+        block: true,
+        searchable: false,
+        data: [
+          {
+            label: 'New',
+            value: 'NEW',
+          },
+          {
+            label: 'Approved',
+            value: 'APPROVED',
+          },
+          {
+            label: 'Rejected',
+            value: 'REJECTED',
+          },
+        ],
+      },
+    },
+
+    {
+      name: 'createdfor',
+      typeField: 'FieldPicker',
+      initialValue: '',
+      placeholder: 'Applicant',
+      component: 'SelectPicker',
+      extraProps: {
+        block: true,
+        onSearch: (searchKeyword) => loadPickerList(searchKeyword),
+        onOpen: () => {
+          if (usersPickerList.length === 0) loadPickerList('');
+        },
+        data: usersPickerList,
+        renderMenu: (menu) => {
+          if (pickerLoading) {
+            return (
+              <p className='t-text-gray-500 t-text-center t-p-2'>
+                <Icon icon='spinner' spin /> Loading...
+              </p>
+            );
+          }
+          return menu;
+        },
+      },
+    },
+    {
+      name: 'createdAt',
+      typeField: 'FieldPicker',
+      initialValue: '',
+      placeholder: 'Created',
+      component: 'DatePicker',
+      extraProps: { block: true },
+    },
+    {
+      name: 'updatedAt',
+      typeField: 'FieldPicker',
+      initialValue: '',
+      placeholder: 'Updated',
+      component: 'DatePicker',
+      extraProps: { block: true },
+    },
+  ];
+
+  const filterFormRef = React.createRef();
+
   return (
     <div>
       <LoanModels />
@@ -38,6 +171,38 @@ const LoanDash = ({ openModel, loadList }) => {
           </div>
         </div>
       </div>
+      <div className='t-border-b t-flex t-items-center'>
+        <DynamicFilterForm
+          onSubmit={(data) => {
+            setFilters(data);
+            loadList({ perPage: 10, page: 1 });
+          }}
+          innerRef={filterFormRef}
+          dynamicSpec={dynamicSpec}
+        />
+        <div className='t-flex t-flex-wrap'>
+          <Button
+            block
+            color='blue'
+            onClick={() => filterFormRef.current.submitForm()}
+          >
+            <Icon icon='filter' className='t-pr-2'></Icon>
+            Reduce
+          </Button>
+          <Button
+            block
+            className='t-mt-2'
+            onClick={() => {
+              filterFormRef.current.resetForm();
+              clearFilters();
+              loadList({ perPage: 10, page: 1 });
+            }}
+          >
+            <Icon icon='recycle' className='t-pr-2'></Icon>
+            Reset
+          </Button>
+        </div>
+      </div>
       <div>
         <LoansTable />
       </div>
@@ -45,8 +210,17 @@ const LoanDash = ({ openModel, loadList }) => {
   );
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  usersPickerList: state.users.usersPickerList,
+  pickerLoading: state.users.loading,
+});
 
-const mapDispatchToProps = { openModel, loadList };
+const mapDispatchToProps = {
+  openModel,
+  loadList,
+  setFilters,
+  clearFilters,
+  loadPickerList,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoanDash);

@@ -6,6 +6,8 @@ import { ActionCell, AvatarCell, NestedCell } from '../../Table/TableCells';
 import { loadList } from '../../../store/slices/loans.slice';
 import { get, omit, toLower, toNumber, upperFirst } from 'lodash';
 import classNames from 'classnames';
+import * as moment from 'moment';
+
 const { Column, Cell, HeaderCell, Pagination } = Table;
 
 const statusColors = {
@@ -98,7 +100,25 @@ const LoansTable = ({ loadList, loansList, loansListMeta, loading }) => {
             formatCell={(rowData) => get(rowData, 'createdFor.name')}
           />
         </Column>
-        <Column width={100}>
+        <Column width={150}>
+          <HeaderCell>Created Date</HeaderCell>
+          <NestedCell
+            dataKey='createdAt'
+            formatCell={(rowData) =>
+              moment(rowData['createdAt']).format('DD/MM/YYYY')
+            }
+          />
+        </Column>
+        <Column width={150}>
+          <HeaderCell>Updated Date</HeaderCell>
+          <NestedCell
+            dataKey='updatedAt'
+            formatCell={(rowData) =>
+              moment(rowData['updatedAt']).format('DD/MM/YYYY')
+            }
+          />
+        </Column>
+        <Column width={100} fixed='right'>
           <HeaderCell>Action</HeaderCell>
           <ActionCell dataKey='id'>
             <ModelAction

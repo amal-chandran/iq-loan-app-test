@@ -1,10 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { get } from 'lodash';
 import { requestJsonAPI } from '../../helpers/api.helper';
 
 export const loadList = createAsyncThunk(
   'loans/loadList',
   async ({ perPage, page }, thunk) => {
-    return await requestJsonAPI(thunk, 'GET', 'loans', null, { perPage, page });
+    const state = thunk.getState();
+
+    const filtered = JSON.stringify(get(state, 'loans.loansListFilters', []));
+
+    return await requestJsonAPI(thunk, 'GET', 'loans', null, {
+      perPage,
+      page,
+      filtered,
+    });
   }
 );
 export const loadLoan = createAsyncThunk(
@@ -39,6 +48,7 @@ const loans = createSlice({
   initialState: {
     loan: {},
     loansList: [],
+    loansListFilters: [],
     loansListMeta: { total: 0, page: 0 },
     loading: false,
     error: null,
@@ -46,6 +56,12 @@ const loans = createSlice({
   reducers: {
     clearErrors: (state) => {
       state.error = null;
+    },
+    setFilters: (state, action) => {
+      state.loansListFilters = action.payload;
+    },
+    clearFilters: (state) => {
+      state.loansListFilters = [];
     },
   },
   extraReducers: {
@@ -133,5 +149,5 @@ const loans = createSlice({
   },
 });
 
-export const { clearErrors } = loans.actions;
+export const { clearErrors, setFilters, clearFilters } = loans.actions;
 export default loans.reducer;

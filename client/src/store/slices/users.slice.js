@@ -1,10 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { get } from 'lodash';
 import { requestJsonAPI } from '../../helpers/api.helper';
 
 export const loadList = createAsyncThunk(
   'users/loadList',
   async ({ perPage, page }, thunk) => {
-    return await requestJsonAPI(thunk, 'GET', 'users', null, { perPage, page });
+    const state = thunk.getState();
+
+    const filtered = JSON.stringify(get(state, 'users.usersListFilters', []));
+
+    return await requestJsonAPI(thunk, 'GET', 'users', null, {
+      filtered,
+      perPage,
+      page,
+    });
   }
 );
 
@@ -13,7 +22,7 @@ export const loadPickerList = createAsyncThunk(
   async (data, thunk) => {
     return await requestJsonAPI(thunk, 'GET', 'users/picker', null, {
       picker: '{"label": "name","value": "id"}',
-      filtered: `[{"id":"name", "value":"${data}"}]`,
+      filtered: `[{"id":"search$name", "value":"${data}"}]`,
     });
   }
 );
@@ -51,6 +60,8 @@ const users = createSlice({
     user: {},
     usersList: [],
     usersListMeta: { total: 0, page: 0 },
+
+    usersListFilters: [],
     usersPickerList: [],
     loading: false,
     error: null,
@@ -58,6 +69,12 @@ const users = createSlice({
   reducers: {
     clearErrors: (state) => {
       state.error = null;
+    },
+    setFilters: (state, action) => {
+      state.usersListFilters = action.payload;
+    },
+    clearFilters: (state) => {
+      state.usersListFilters = [];
     },
   },
   extraReducers: {
@@ -161,5 +178,5 @@ const users = createSlice({
   },
 });
 
-export const { clearErrors } = users.actions;
+export const { clearErrors, setFilters, clearFilters } = users.actions;
 export default users.reducer;

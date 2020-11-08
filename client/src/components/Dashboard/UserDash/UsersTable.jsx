@@ -5,7 +5,7 @@ import { ModelAction } from './../../Table/ActionButtons';
 import { ActionCell, AvatarCell, NestedCell } from './../../Table/TableCells';
 import { loadList } from './../../../store/slices/users.slice';
 import { omit, toNumber, upperFirst } from 'lodash';
-
+import * as moment from 'moment';
 const { Column, Cell, HeaderCell, Pagination } = Table;
 
 const UsersTable = ({ loadList, usersList, usersListMeta, loading }) => {
@@ -41,18 +41,36 @@ const UsersTable = ({ loadList, usersList, usersListMeta, loading }) => {
           <Cell dataKey='name' />
         </Column>
 
-        <Column width={200}>
+        <Column width={250}>
           <HeaderCell>Email</HeaderCell>
           <Cell dataKey='email' />
         </Column>
-        <Column width={100}>
+        <Column width={150}>
           <HeaderCell>Role</HeaderCell>
           <NestedCell
             dataKey='role'
             formatCell={(rowData) => upperFirst(rowData['role'])}
           />
         </Column>
-        <Column width={200}>
+        <Column width={150}>
+          <HeaderCell>Created Date</HeaderCell>
+          <NestedCell
+            dataKey='createdAt'
+            formatCell={(rowData) =>
+              moment(rowData['createdAt']).format('DD/MM/YYYY')
+            }
+          />
+        </Column>
+        <Column width={150}>
+          <HeaderCell>Updated Date</HeaderCell>
+          <NestedCell
+            dataKey='updatedAt'
+            formatCell={(rowData) =>
+              moment(rowData['updatedAt']).format('DD/MM/YYYY')
+            }
+          />
+        </Column>
+        <Column width={100} fixed='right'>
           <HeaderCell>Action</HeaderCell>
           <ActionCell dataKey='id'>
             <ModelAction
