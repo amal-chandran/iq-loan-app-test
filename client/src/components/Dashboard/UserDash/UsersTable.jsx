@@ -50,7 +50,7 @@ const UsersTable = ({ loadList, usersList, loading }) => {
           />
         </Column>
         <Column width={200}>
-          <HeaderCell>Action Cell</HeaderCell>
+          <HeaderCell>Action</HeaderCell>
           <ActionCell dataKey='id'>
             <ModelAction
               modelName='CreateEditUserModel'

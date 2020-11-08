@@ -7,10 +7,21 @@ export const loadList = createAsyncThunk(
     return await requestJsonAPI(thunk, 'GET', 'users');
   }
 );
+
+export const loadPickerList = createAsyncThunk(
+  'users/loadPickerList',
+  async (data, thunk) => {
+    return await requestJsonAPI(thunk, 'GET', 'users/picker', null, {
+      picker: '{"label": "name","value": "id"}',
+      filtered: `[{"id":"name", "value":"${data}"}]`,
+    });
+  }
+);
+
 export const loadUser = createAsyncThunk(
   'users/loadUser',
   async (id, thunk) => {
-    return await requestJsonAPI(thunk, 'GET', 'users', null, { id });
+    return await requestJsonAPI(thunk, 'GET', `users/${id}`);
   }
 );
 export const createUser = createAsyncThunk(
@@ -39,6 +50,7 @@ const users = createSlice({
   initialState: {
     user: {},
     usersList: [],
+    usersPickerList: [],
     loading: false,
     error: null,
   },
@@ -63,6 +75,22 @@ const users = createSlice({
       loading: false,
       usersList: action.payload.data,
     }),
+    // loadList
+    [loadPickerList.pending]: (state, action) => ({
+      ...state,
+      loading: true,
+    }),
+    [loadPickerList.rejected]: (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.payload,
+    }),
+    [loadPickerList.fulfilled]: (state, action) => ({
+      ...state,
+      loading: false,
+      usersPickerList: action.payload.data,
+    }),
+
     // loadList
     [loadUser.pending]: (state, action) => ({
       ...state,
