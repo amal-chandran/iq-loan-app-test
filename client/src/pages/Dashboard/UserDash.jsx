@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Icon } from 'rsuite';
-import { UsersTable } from '../../components/Dashboard/UserDash/UsersTable';
+import UsersTable from '../../components/Dashboard/UserDash/UsersTable';
 import UserModels from './../../components/Dashboard/UserDash/UserModels';
 import { openModel } from './../../store/slices/model.slice';
 
@@ -16,15 +16,21 @@ export const UserDash = ({ openModel }) => {
         </div>
         <div>
           <Button
-            onClick={() => openModel({ name: 'CreateEditUserModel', data: {} })}
+            onClick={() =>
+              openModel({
+                name: 'CreateEditUserModel',
+                data: { type: 'create' },
+              })
+            }
             color='green'
           >
+            <Icon icon='plus' className='t-pr-2'></Icon>
             Create User
           </Button>
         </div>
       </div>
       <div>
-        <UsersTable></UsersTable>
+        <UsersTable />
       </div>
     </div>
   );

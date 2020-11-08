@@ -19500,6 +19500,14 @@ video {
   animation: bounce 1s infinite;
 }
 
+.link-group .rs-table-cell-content {
+  padding: 5px;
+}
+
+.no-padding .rs-table-cell-content {
+  padding: 0px;
+}
+
 @media (min-width: 640px) {
   .sm\:t-container {
     width: 100%;

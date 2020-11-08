@@ -1,51 +1,78 @@
-import React, { Component, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Table } from 'rsuite';
-import fakeData from './users.json';
+import { Icon, IconButton, Table, Avatar } from 'rsuite';
+import { ModelAction } from './../../Table/ActionButtons';
+import { ActionCell, AvatarCell, NestedCell } from './../../Table/TableCells';
+import { loadList } from './../../../store/slices/users.slice';
+import { omit, upperFirst } from 'lodash';
+
 const { Column, Cell, HeaderCell, Pagination } = Table;
 
-export const UsersTable = () => {
+const UsersTable = ({ loadList, usersList, loading }) => {
   const [page, setPage] = useState(1);
   const [displayLength, setDisplayLength] = useState(10);
+
+  useEffect(() => {
+    loadList();
+  }, [loadList]);
 
   const handleChangeLength = (dataKey) => {
     setDisplayLength(dataKey);
     setPage(1);
   };
 
-  const getData = () => {
-    return fakeData.filter((v, i) => {
-      const start = displayLength * (page - 1);
-      const end = start + displayLength;
-      return i >= start && i < end;
-    });
-  };
-  const data = getData();
   return (
     <div>
-      <Table height={420} data={data}>
+      <Table height={420} data={usersList} loading={loading}>
         <Column width={50} align='center' fixed>
           <HeaderCell>Id</HeaderCell>
           <Cell dataKey='id' />
         </Column>
 
-        <Column width={100} fixed>
-          <HeaderCell>First Name</HeaderCell>
-          <Cell dataKey='firstName' />
+        <Column width={50} fixed>
+          <HeaderCell>Avatar</HeaderCell>
+          <AvatarCell dataKey='name' />
         </Column>
-
-        <Column width={100}>
-          <HeaderCell>Last Name</HeaderCell>
-          <Cell dataKey='lastName' />
+        <Column width={200} fixed>
+          <HeaderCell>Name</HeaderCell>
+          <Cell dataKey='name' />
         </Column>
 
         <Column width={200}>
-          <HeaderCell>City</HeaderCell>
-          <Cell dataKey='city' />
+          <HeaderCell>Email</HeaderCell>
+          <Cell dataKey='email' />
         </Column>
-        <Column width={200} flexGrow={1}>
-          <HeaderCell>Company Name</HeaderCell>
-          <Cell dataKey='companyName' />
+        <Column width={100}>
+          <HeaderCell>Role</HeaderCell>
+          <NestedCell
+            dataKey='role'
+            formatCell={(rowData) => upperFirst(rowData['role'])}
+          />
+        </Column>
+        <Column width={200}>
+          <HeaderCell>Action Cell</HeaderCell>
+          <ActionCell dataKey='id'>
+            <ModelAction
+              modelName='CreateEditUserModel'
+              icon='edit2'
+              tooltip='Edit User'
+              modelTransform={(rowData) => ({
+                type: 'edit',
+                id: rowData.id,
+                initialValues: omit(rowData, ['_parent', 'children']),
+              })}
+            />
+            <ModelAction
+              modelName='DeleteUserModel'
+              icon='trash'
+              tooltip='Delete User'
+              modelTransform={(rowData) => ({
+                type: 'delete',
+                id: rowData.id,
+                name: rowData.name,
+              })}
+            />
+          </ActionCell>
         </Column>
       </Table>
 
@@ -63,7 +90,7 @@ export const UsersTable = () => {
         ]}
         activePage={page}
         displayLength={displayLength}
-        total={fakeData.length}
+        total={usersList.length}
         onChangePage={setPage}
         onChangeLength={handleChangeLength}
       />
@@ -71,8 +98,11 @@ export const UsersTable = () => {
   );
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  usersList: state.users.usersList,
+  loading: state.users.loading,
+});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { loadList };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersTable);

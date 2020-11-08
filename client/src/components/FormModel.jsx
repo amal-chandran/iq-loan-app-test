@@ -55,7 +55,6 @@ export default function FormModelCreate(modelName, title, size = 'md') {
               <Button
                 onClick={() => {
                   submitWithData ? submitForm(data) : submitForm();
-                  this.props.toggleModel(modelName);
                 }}
                 appearance='primary'
               >
