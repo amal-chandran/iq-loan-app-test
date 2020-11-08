@@ -5,7 +5,6 @@ import {
   get,
   isDate,
   isEmpty,
-  isInteger,
   isNumber,
   isString,
   toPairs,
@@ -31,12 +30,12 @@ const DynamicFilterForm = ({
   dynamicSpec,
   containerProps,
 }) => {
-  const FieldList = dynamicSpec.map((FieldSpec) => {
+  const FieldList = dynamicSpec.map((FieldSpec, index) => {
     const Field = get(typeFields, FieldSpec.typeField);
     const fieldClassName = FieldSpec.className || 't-pt-2 t-pr-2 t-w-1/4';
 
     return (
-      <div className={fieldClassName}>
+      <div className={fieldClassName} key={index}>
         <Whisper
           placement='top'
           trigger='hover'

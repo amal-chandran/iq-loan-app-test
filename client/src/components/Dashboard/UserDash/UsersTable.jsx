@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Icon, IconButton, Table, Avatar } from 'rsuite';
+import { Table } from 'rsuite';
 import { ModelAction } from './../../Table/ActionButtons';
 import { ActionCell, AvatarCell, NestedCell } from './../../Table/TableCells';
 import { loadList } from './../../../store/slices/users.slice';
 import { omit, toNumber, upperFirst } from 'lodash';
 import * as moment from 'moment';
+import { AbilityContext } from '../../../helpers/ability.helper';
+import { useAbility } from '@casl/react';
 const { Column, Cell, HeaderCell, Pagination } = Table;
 
 const UsersTable = ({ loadList, usersList, usersListMeta, loading }) => {
@@ -23,6 +25,7 @@ const UsersTable = ({ loadList, usersList, usersListMeta, loading }) => {
     setDisplayLength(dataKey);
     setPage(1);
   };
+  const ability = useAbility(AbilityContext);
 
   return (
     <div>
@@ -70,31 +73,37 @@ const UsersTable = ({ loadList, usersList, usersListMeta, loading }) => {
             }
           />
         </Column>
-        <Column width={100} fixed='right'>
-          <HeaderCell>Action</HeaderCell>
-          <ActionCell dataKey='id'>
-            <ModelAction
-              modelName='CreateEditUserModel'
-              icon='edit2'
-              tooltip='Edit User'
-              modelTransform={(rowData) => ({
-                type: 'edit',
-                id: rowData.id,
-                initialValues: omit(rowData, ['_parent', 'children']),
-              })}
-            />
-            <ModelAction
-              modelName='DeleteUserModel'
-              icon='trash'
-              tooltip='Delete User'
-              modelTransform={(rowData) => ({
-                type: 'delete',
-                id: rowData.id,
-                name: rowData.name,
-              })}
-            />
-          </ActionCell>
-        </Column>
+        {ability.can('edit', 'Users') || ability.can('delete', 'Users') ? (
+          <Column width={100} fixed='right'>
+            <HeaderCell>Action</HeaderCell>
+            <ActionCell dataKey='id'>
+              <ModelAction
+                modelName='CreateEditUserModel'
+                icon='edit2'
+                tooltip='Edit User'
+                isVisible={() => ability.can('edit', 'Users')}
+                modelTransform={(rowData) => ({
+                  type: 'edit',
+                  id: rowData.id,
+                  initialValues: omit(rowData, ['_parent', 'children']),
+                })}
+              />
+              <ModelAction
+                modelName='DeleteUserModel'
+                icon='trash'
+                tooltip='Delete User'
+                isVisible={() => ability.can('delete', 'Users')}
+                modelTransform={(rowData) => ({
+                  type: 'delete',
+                  id: rowData.id,
+                  name: rowData.name,
+                })}
+              />
+            </ActionCell>
+          </Column>
+        ) : (
+          ''
+        )}
       </Table>
 
       <Pagination

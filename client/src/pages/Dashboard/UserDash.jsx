@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Icon } from 'rsuite';
 import UsersTable from '../../components/Dashboard/UserDash/UsersTable';
 import DynamicFilterForm from '../../components/DynamicFilterForm';
+import { Can } from '../../helpers/ability.helper';
 import UserModels from './../../components/Dashboard/UserDash/UserModels';
 import { openModel } from './../../store/slices/model.slice';
 import {
@@ -90,18 +91,20 @@ export const UserDash = ({ openModel, loadList, setFilters, clearFilters }) => {
             </Button>
           </div>
           <div>
-            <Button
-              onClick={() =>
-                openModel({
-                  name: 'CreateEditUserModel',
-                  data: { type: 'create' },
-                })
-              }
-              color='green'
-            >
-              <Icon icon='plus' className='t-pr-2'></Icon>
-              Create User
-            </Button>
+            <Can I='create' a='Users'>
+              <Button
+                onClick={() =>
+                  openModel({
+                    name: 'CreateEditUserModel',
+                    data: { type: 'create' },
+                  })
+                }
+                color='green'
+              >
+                <Icon icon='plus' className='t-pr-2'></Icon>
+                Create User
+              </Button>
+            </Can>
           </div>
         </div>
       </div>

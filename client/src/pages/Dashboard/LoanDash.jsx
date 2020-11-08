@@ -11,7 +11,7 @@ import {
 } from './../../store/slices/loans.slice';
 import { loadPickerList } from './../../store/slices/users.slice';
 import DynamicFilterForm from './../../components/DynamicFilterForm';
-
+import { Can } from './../../helpers/ability.helper';
 const LoanDash = ({
   openModel,
   loadList,
@@ -123,7 +123,7 @@ const LoanDash = ({
     {
       name: 'createdAt',
       typeField: 'FieldPicker',
-      initialValue: '',
+      initialValue: null,
       placeholder: 'Created',
       component: 'DatePicker',
       extraProps: { block: true },
@@ -131,7 +131,7 @@ const LoanDash = ({
     {
       name: 'updatedAt',
       typeField: 'FieldPicker',
-      initialValue: '',
+      initialValue: null,
       placeholder: 'Updated',
       component: 'DatePicker',
       extraProps: { block: true },
@@ -156,18 +156,20 @@ const LoanDash = ({
             </Button>
           </div>
           <div>
-            <Button
-              onClick={() =>
-                openModel({
-                  name: 'CreateEditLoanModel',
-                  data: { type: 'create' },
-                })
-              }
-              color='green'
-            >
-              <Icon icon='plus' className='t-pr-2'></Icon>
-              Create Loan
-            </Button>
+            <Can I='create' a='Loans'>
+              <Button
+                onClick={() =>
+                  openModel({
+                    name: 'CreateEditLoanModel',
+                    data: { type: 'create' },
+                  })
+                }
+                color='green'
+              >
+                <Icon icon='plus' className='t-pr-2'></Icon>
+                Create Loan
+              </Button>
+            </Can>
           </div>
         </div>
       </div>

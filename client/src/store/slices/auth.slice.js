@@ -12,8 +12,8 @@ export const register = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk('auth/logout', async () => {
-  return true;
+export const logout = createAsyncThunk('auth/logout', async (data, thunk) => {
+  return await requestJsonAPI(thunk, 'POST', 'auth/logout', data);
 });
 
 const auth = createSlice({
@@ -21,6 +21,7 @@ const auth = createSlice({
   initialState: {
     isAuthenticated: false,
     user: {},
+    rules: {},
     loading: false,
     error: null,
   },

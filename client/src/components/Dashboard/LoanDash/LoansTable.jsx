@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Icon, IconButton, Table, Avatar, Tag } from 'rsuite';
+import { Table, Tag } from 'rsuite';
 import { ModelAction } from '../../Table/ActionButtons';
-import { ActionCell, AvatarCell, NestedCell } from '../../Table/TableCells';
+import { ActionCell, NestedCell } from '../../Table/TableCells';
 import { loadList } from '../../../store/slices/loans.slice';
 import { get, omit, toLower, toNumber, upperFirst } from 'lodash';
 import classNames from 'classnames';
 import * as moment from 'moment';
+import { AbilityContext } from '../../../helpers/ability.helper';
+import { useAbility } from '@casl/react';
 
 const { Column, Cell, HeaderCell, Pagination } = Table;
 
@@ -36,6 +38,7 @@ const LoansTable = ({ loadList, loansList, loansListMeta, loading }) => {
     setDisplayLength(dataKey);
     setPage(1);
   };
+  const ability = useAbility(AbilityContext);
 
   return (
     <div>
@@ -118,31 +121,37 @@ const LoansTable = ({ loadList, loansList, loansListMeta, loading }) => {
             }
           />
         </Column>
-        <Column width={100} fixed='right'>
-          <HeaderCell>Action</HeaderCell>
-          <ActionCell dataKey='id'>
-            <ModelAction
-              modelName='CreateEditLoanModel'
-              icon='edit2'
-              tooltip='Edit Loan'
-              modelTransform={(rowData) => ({
-                type: 'edit',
-                id: rowData.id,
-                initialValues: omit(rowData, ['_parent', 'children']),
-              })}
-            />
-            <ModelAction
-              modelName='DeleteLoanModel'
-              icon='trash'
-              tooltip='Delete Loan'
-              modelTransform={(rowData) => ({
-                type: 'delete',
-                id: rowData.id,
-                name: rowData.name,
-              })}
-            />
-          </ActionCell>
-        </Column>
+        {ability.can('edit', 'Loans') || ability.can('delete', 'Loans') ? (
+          <Column width={100} fixed='right'>
+            <HeaderCell>Action</HeaderCell>
+            <ActionCell dataKey='id'>
+              <ModelAction
+                modelName='CreateEditLoanModel'
+                icon='edit2'
+                tooltip='Edit Loan'
+                isVisible={() => ability.can('edit', 'Loans')}
+                modelTransform={(rowData) => ({
+                  type: 'edit',
+                  id: rowData.id,
+                  initialValues: omit(rowData, ['_parent', 'children']),
+                })}
+              />
+              <ModelAction
+                modelName='DeleteLoanModel'
+                icon='trash'
+                tooltip='Delete Loan'
+                isVisible={() => ability.can('delete', 'Loans')}
+                modelTransform={(rowData) => ({
+                  type: 'delete',
+                  id: rowData.id,
+                  name: rowData.name,
+                })}
+              />
+            </ActionCell>
+          </Column>
+        ) : (
+          ''
+        )}
       </Table>
 
       <Pagination
