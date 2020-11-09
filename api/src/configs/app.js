@@ -1,4 +1,7 @@
-export const path = require('path');
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const JWT_KEY = 'CvRwumWVwekKBPQm';
 export const SALT_ROUNDS = 10;

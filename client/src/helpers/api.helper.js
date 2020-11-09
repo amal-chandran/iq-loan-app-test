@@ -19,7 +19,7 @@ export const requestJsonAPI = (thunk, method, path, body, params) => {
   if (body) {
     requestInit.body = JSON.stringify(body);
   }
-  console.log(state);
+  // console.log(state);
   if (state && state.auth && state.auth.token) {
     requestInit.headers['Authorization'] = `Bearer ${state.auth.token}`;
   }

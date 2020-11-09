@@ -33,7 +33,7 @@ const LoanForm = ({
         initialValues={initialValues}
         enableReinitialize={true}
         onSubmit={(formData) => {
-          console.log(formData);
+          // console.log(formData);
           onSubmit(formData);
         }}
       >

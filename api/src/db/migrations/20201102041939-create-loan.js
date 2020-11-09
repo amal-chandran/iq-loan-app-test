@@ -6,43 +6,43 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       tenure: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       status: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       status_dates: {
-        type: Sequelize.JSONB
+        type: Sequelize.JSONB,
       },
       interest: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       principal_amount: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
       },
       interest_type: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdby: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       createdfor: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Loans');
-  }
+  },
 };

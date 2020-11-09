@@ -1,0 +1,24 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  api:
+    build: ./api
+    ports:
+      - '8000:8000'
+    environment:
+      - NODE_ENV=development
+      - DEV_DB_HOSTNAME=db
+      - DEV_DB_NAME=postgres
+    depends_on:
+      - db
+  client:
+    build: ./client
+    ports:
+      - '3000:3000'
+    depends_on:
+      - api

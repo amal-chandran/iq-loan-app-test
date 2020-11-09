@@ -66,7 +66,7 @@ const DynamicFilterForm = ({
       enableReinitialize={true}
       onSubmit={(formData) => {
         const filterPairs = toPairs(formData);
-        console.log(filterPairs);
+        // console.log(filterPairs);
         const stringfilterPairs = filterPairs
           .map(([key, value]) => {
             let newValue = value;
