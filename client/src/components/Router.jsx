@@ -6,12 +6,13 @@ import { Router } from '@reach/router';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
-import { AbilityContext } from './../helpers/ability.helper';
+import { AbilityContext, conditionsMatcher } from './../helpers/ability.helper';
 import { Ability } from '@casl/ability';
 import PrivateRoute from './../components/PrivateRoute';
+
 export const AppRouter = ({ rules }) => {
   return (
-    <AbilityContext.Provider value={new Ability(rules)}>
+    <AbilityContext.Provider value={new Ability(rules, { conditionsMatcher })}>
       <Router>
         <LayoutMain path='/'>
           <Login path='/'></Login>

@@ -82,6 +82,8 @@ const users = createSlice({
     [loadList.pending]: (state, action) => ({
       ...state,
       loading: true,
+      usersList: [],
+      usersListMeta: { total: 0, page: 0 },
     }),
     [loadList.rejected]: (state, action) => ({
       ...state,
@@ -94,9 +96,10 @@ const users = createSlice({
       usersList: action.payload.data,
       usersListMeta: action.payload.meta,
     }),
-    // loadList
+    // loadPickerList
     [loadPickerList.pending]: (state, action) => ({
       ...state,
+      usersPickerList: [],
       loading: true,
     }),
     [loadPickerList.rejected]: (state, action) => ({
@@ -110,9 +113,10 @@ const users = createSlice({
       usersPickerList: action.payload.data,
     }),
 
-    // loadList
+    // loadUser
     [loadUser.pending]: (state, action) => ({
       ...state,
+      user: {},
       loading: true,
     }),
     [loadUser.rejected]: (state, action) => ({

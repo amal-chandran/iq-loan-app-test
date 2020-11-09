@@ -11,7 +11,8 @@ import {
 } from './../../store/slices/loans.slice';
 import { loadPickerList } from './../../store/slices/users.slice';
 import DynamicFilterForm from './../../components/DynamicFilterForm';
-import { Can } from './../../helpers/ability.helper';
+import { AbilityContext, Can } from './../../helpers/ability.helper';
+import { useAbility } from '@casl/react';
 const LoanDash = ({
   openModel,
   loadList,
@@ -21,7 +22,7 @@ const LoanDash = ({
   setFilters,
   clearFilters,
 }) => {
-  const dynamicSpec = [
+  let dynamicSpec = [
     {
       name: 'principal_amount',
       typeField: 'FieldPicker',
@@ -137,6 +138,11 @@ const LoanDash = ({
       extraProps: { block: true },
     },
   ];
+  const ability = useAbility(AbilityContext);
+
+  if (!ability.can('list', 'Users')) {
+    dynamicSpec = dynamicSpec.filter(({ name }) => name !== 'createdfor');
+  }
 
   const filterFormRef = React.createRef();
 
@@ -149,14 +155,14 @@ const LoanDash = ({
           Loans
         </div>
         <div className='t-flex'>
-          <div className='t-pr-2'>
+          <div className='t-pr-2 last:t-pr-0'>
             <Button onClick={() => loadList({ perPage: 10, page: 1 })}>
               <Icon icon='refresh2' className='t-pr-2'></Icon>
               Refresh
             </Button>
           </div>
-          <div>
-            <Can I='create' a='Loans'>
+          <Can I='create' a='Loans'>
+            <div>
               <Button
                 onClick={() =>
                   openModel({
@@ -169,8 +175,8 @@ const LoanDash = ({
                 <Icon icon='plus' className='t-pr-2'></Icon>
                 Create Loan
               </Button>
-            </Can>
-          </div>
+            </div>
+          </Can>
         </div>
       </div>
       <div className='t-border-b t-flex t-items-center'>

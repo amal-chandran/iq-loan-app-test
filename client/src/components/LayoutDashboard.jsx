@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Avatar, Icon } from 'rsuite';
+import { Avatar, Icon, Tag } from 'rsuite';
 import { avatarText } from './../helpers/text-format.helper';
 import { Link, navigate } from '@reach/router';
 import { AbilityContext } from './../helpers/ability.helper';
@@ -51,9 +51,16 @@ export const LayoutDashboard = ({ user, children, logout }) => {
             </div>
 
             <div className='t-mt-2 t-shadow-md t-rounded  t-overflow-hidden  t-bg-white'>
-              <div className=' t-py-2 t-px-3 t-font-light t-text-lg t-bg-gray-400 '>
-                <Icon icon='money' className='t-text-xl t-pr-2' />
-                Loan Book
+              <div className='t-flex t-justify-between t-items-center t-py-2 t-px-3 t-font-light t-text-lg t-bg-gray-400 '>
+                <div>
+                  <Icon icon='money' className='t-text-xl t-pr-2' />
+                  Loan Book
+                </div>
+                <div>
+                  <Tag className='t-bg-gray-500 t-font-bold t-capitalize'>
+                    {user.role}
+                  </Tag>
+                </div>
               </div>
               <div className='t-p-2'>
                 {sideList.map((Item) => {

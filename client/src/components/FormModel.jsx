@@ -12,20 +12,27 @@ export default function FormModelCreate(modelName, title, size = 'md') {
       submitForm: () => {},
       submitWithData: false,
       metaData: {
+        plain: {
+          title,
+          noFooter: true,
+        },
         create: {
           title: `New ${title}`,
           submitLabel: 'Create',
           cancelLabel: 'Cancel',
+          noFooter: false,
         },
         edit: {
           title: `Edit ${title}`,
           submitLabel: 'Save',
           cancelLabel: 'Cancel',
+          noFooter: false,
         },
         delete: {
           title: `Delete ${title}`,
           submitLabel: 'Yes',
           cancelLabel: 'No',
+          noFooter: false,
         },
       },
     };
@@ -51,19 +58,23 @@ export default function FormModelCreate(modelName, title, size = 'md') {
               <Modal.Title>{metaData[type].title}</Modal.Title>
             </Modal.Header>
             <Modal.Body className='t-mt-4'>{children(data)}</Modal.Body>
-            <Modal.Footer>
-              <Button
-                onClick={() => {
-                  submitWithData ? submitForm(data) : submitForm();
-                }}
-                appearance='primary'
-              >
-                {metaData[type].submitLabel}
-              </Button>
-              <Button onClick={this.handleModel} appearance='subtle'>
-                {metaData[type].cancelLabel}
-              </Button>
-            </Modal.Footer>
+            {!metaData[type].noFooter ? (
+              <Modal.Footer>
+                <Button
+                  onClick={() => {
+                    submitWithData ? submitForm(data) : submitForm();
+                  }}
+                  appearance='primary'
+                >
+                  {metaData[type].submitLabel}
+                </Button>
+                <Button onClick={this.handleModel} appearance='subtle'>
+                  {metaData[type].cancelLabel}
+                </Button>
+              </Modal.Footer>
+            ) : (
+              ''
+            )}
           </Modal>
         </div>
       );

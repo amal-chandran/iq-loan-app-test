@@ -36,6 +36,15 @@ export const updateLoan = createAsyncThunk(
   }
 );
 
+export const setStatusLoan = createAsyncThunk(
+  'loans/set-status',
+  async ({ id, status }, thunk) => {
+    return await requestJsonAPI(thunk, 'PATCH', `loans/${id}/set-status`, {
+      status,
+    });
+  }
+);
+
 export const deleteLoan = createAsyncThunk(
   'loans/delete',
   async (id, thunk) => {
@@ -69,6 +78,8 @@ const loans = createSlice({
     [loadList.pending]: (state, action) => ({
       ...state,
       loading: true,
+      loansList: [],
+      loansListMeta: [],
     }),
     [loadList.rejected]: (state, action) => ({
       ...state,
@@ -85,6 +96,7 @@ const loans = createSlice({
     [loadLoan.pending]: (state, action) => ({
       ...state,
       loading: true,
+      loan: {},
     }),
     [loadLoan.rejected]: (state, action) => ({
       ...state,
@@ -129,6 +141,26 @@ const loans = createSlice({
         action.payload.data,
       ],
     }),
+
+    // setStatusLoan
+    [setStatusLoan.pending]: (state, action) => ({
+      ...state,
+      loading: true,
+    }),
+    [setStatusLoan.rejected]: (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.payload,
+    }),
+    [setStatusLoan.fulfilled]: (state, action) => ({
+      ...state,
+      loading: false,
+      loansList: [
+        ...state.loansList.filter(({ id }) => id !== action.payload.data.id),
+        action.payload.data,
+      ],
+    }),
+
     // deleteLoan
     [deleteLoan.pending]: (state, action) => ({
       ...state,

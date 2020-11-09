@@ -11,7 +11,7 @@ import {
 } from 'rsuite';
 import { Formik, Form, Field } from 'formik';
 import { FieldControl, FieldPicker } from '../../FieldControl';
-
+import { Can } from './../../../helpers/ability.helper';
 class UserForm extends Component {
   static defaultProps = {
     onSubmit: () => {},
@@ -20,7 +20,7 @@ class UserForm extends Component {
       email: '',
       password: '',
       changePassword: true,
-      role: '',
+      role: 'customer',
     },
   };
 
@@ -68,6 +68,7 @@ class UserForm extends Component {
                     className='tw-my-2'
                     type='password'
                     name='password'
+                    moduleName
                     disabled={!values.changePassword && type === 'edit'}
                     placeholder='eg: #secret@'
                   />
@@ -89,34 +90,36 @@ class UserForm extends Component {
                 </div>
                 <HelpBlock>Password should be complex</HelpBlock>
               </FormGroup>
-              <FormGroup>
-                <ControlLabel>Role</ControlLabel>
-                <div>
-                  <FieldPicker
-                    component={SelectPicker}
-                    block
-                    searchable={false}
-                    data={[
-                      {
-                        label: 'Customer',
-                        value: 'customer',
-                      },
-                      {
-                        label: 'Agent',
-                        value: 'agent',
-                      },
-                      {
-                        label: 'Admin',
-                        value: 'admin',
-                      },
-                    ]}
-                    className='tw-my-2'
-                    name='role'
-                    placeholder='eg: admin'
-                  />
-                </div>
-                <HelpBlock>Role of the user</HelpBlock>
-              </FormGroup>
+              <Can I='set-role' a='Users'>
+                <FormGroup>
+                  <ControlLabel>Role</ControlLabel>
+                  <div>
+                    <FieldPicker
+                      component={SelectPicker}
+                      block
+                      searchable={false}
+                      data={[
+                        {
+                          label: 'Customer',
+                          value: 'customer',
+                        },
+                        {
+                          label: 'Agent',
+                          value: 'agent',
+                        },
+                        {
+                          label: 'Admin',
+                          value: 'admin',
+                        },
+                      ]}
+                      className='tw-my-2'
+                      name='role'
+                      placeholder='eg: admin'
+                    />
+                  </div>
+                  <HelpBlock>Role of the user</HelpBlock>
+                </FormGroup>
+              </Can>
             </Form>
           )}
         </Formik>

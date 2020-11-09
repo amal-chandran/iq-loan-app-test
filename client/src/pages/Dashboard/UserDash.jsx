@@ -84,14 +84,14 @@ export const UserDash = ({ openModel, loadList, setFilters, clearFilters }) => {
           Users
         </div>
         <div className='t-flex'>
-          <div className='t-pr-2'>
+          <div className='t-pr-2 last:t-pr-0'>
             <Button onClick={() => loadList({ perPage: 10, page: 1 })}>
               <Icon icon='refresh2' className='t-pr-2'></Icon>
               Refresh
             </Button>
           </div>
-          <div>
-            <Can I='create' a='Users'>
+          <Can I='create' a='Users'>
+            <div>
               <Button
                 onClick={() =>
                   openModel({
@@ -104,8 +104,8 @@ export const UserDash = ({ openModel, loadList, setFilters, clearFilters }) => {
                 <Icon icon='plus' className='t-pr-2'></Icon>
                 Create User
               </Button>
-            </Can>
-          </div>
+            </div>
+          </Can>
         </div>
       </div>
       <div className='t-border-b t-flex t-items-center'>

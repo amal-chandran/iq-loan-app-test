@@ -45,6 +45,7 @@ const LoanForm = ({
                 className='tw-my-2'
                 prefix='₹'
                 component={InputNumber}
+                min={0}
                 name='principal_amount'
                 placeholder='eg: 100000'
               />
@@ -57,6 +58,7 @@ const LoanForm = ({
                 className='tw-my-2'
                 postfix={<Icon icon='calendar-o' />}
                 name='tenure'
+                min={0}
                 placeholder='eg: 12 months'
               />
               <HelpBlock>Tenure of the loan in months</HelpBlock>
@@ -68,6 +70,7 @@ const LoanForm = ({
                 className='tw-my-2'
                 name='interest'
                 postfix='%'
+                step={0.1}
                 placeholder='eg: 12%'
               />
               <HelpBlock>Interest of the loan in %</HelpBlock>
@@ -91,7 +94,7 @@ const LoanForm = ({
                   ]}
                   className='tw-my-2'
                   name='interest_type'
-                  placeholder='eg: admin'
+                  placeholder='eg: Fixed'
                 />
               </div>
               <HelpBlock>Interest Type of the loan</HelpBlock>
@@ -119,7 +122,7 @@ const LoanForm = ({
                   }}
                   className='tw-my-2'
                   name='createdfor'
-                  placeholder='eg: admin'
+                  placeholder='eg: Amal Chandran'
                 />
               </div>
               <HelpBlock>Applicant of the loan</HelpBlock>
@@ -134,9 +137,9 @@ const LoanForm = ({
 LoanForm.defaultProps = {
   onSubmit: () => {},
   initialValues: {
-    principal_amount: 0,
-    tenure: 0,
-    interest: 0,
+    principal_amount: '',
+    tenure: '',
+    interest: '',
     interest_type: 'fixed',
     createdfor: '',
   },
