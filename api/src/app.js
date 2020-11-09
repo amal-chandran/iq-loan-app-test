@@ -12,7 +12,7 @@ import { sequelize } from './app/models';
 import userAuth from './app/middlewares/user-auth';
 import errorHandle from './app/middlewares/error-handle';
 
-console.log(process.env.NODE_ENV);
+// console.log(process.env.NODE_ENV);
 const app = express();
 
 sequelize

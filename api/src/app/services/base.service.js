@@ -85,7 +85,7 @@ export default class BaseService {
     return result;
   }
 
-  async create(data) {
+  async create(data, ability) {
     ForbiddenError.from(ability).throwUnlessCan(
       'create',
       subject(this.model.model_name, data)
@@ -119,7 +119,7 @@ export default class BaseService {
     return await result.save();
   }
 
-  async delete(id) {
+  async delete(id, ability) {
     const result = await this.model.findOne({
       where: { id },
       include: this.includes,

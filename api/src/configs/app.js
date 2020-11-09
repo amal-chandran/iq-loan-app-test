@@ -15,3 +15,4 @@ export const APP_HOST = 'localhost';
 export const APP_URL = `http://${APP_HOST}:${APP_PORT}`;
 export const APP_UPLOADS_URL = `${APP_URL}/uploads/`;
 export const APP_ASSETS_URL = `${APP_URL}/assets/`;
+export const NODE_ENV = process.env.NODE_ENV;

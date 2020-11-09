@@ -18,6 +18,7 @@ export default function (req, res, next) {
 
     jwt.verify(token, JWT_KEY, (err, { user }) => {
       if (err) next(err);
+
       req.user = user;
       req.userId = user.id;
       req.ability = defineAbilityFor(user);

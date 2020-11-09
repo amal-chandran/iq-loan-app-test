@@ -26,8 +26,8 @@ export default class BaseController {
     return await this.service.getBySlug(slug, ability);
   };
 
-  store = async (data, req) => {
-    return await this.service.create(this.getParams(data, req));
+  store = async (data, { ability, ...req }) => {
+    return await this.service.create(this.getParams(data, req), ability);
   };
 
   update = async ({ id, ...data }, req) => {

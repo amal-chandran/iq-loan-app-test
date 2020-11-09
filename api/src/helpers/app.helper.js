@@ -4,6 +4,8 @@ import flatten from 'lodash/flatten';
 import merge from 'lodash/merge';
 import assign from 'lodash/assign';
 import { isFunction } from 'lodash';
+import { logger } from './../bootstrap/logger';
+import createError from 'http-errors';
 
 export function execute(controller, validator) {
   return async function (req, res, next) {
@@ -30,17 +32,21 @@ export function executeAsync(controller, validator) {
       if (!isEmpty(req.files)) data['files'] = req.files;
       if (!isEmpty(req.file)) data['file'] = req.file;
 
-      if (!isEmpty(validator)) {
-        if (isArray(validator)) {
-          data = await Promise.all(
-            validator.map((single) =>
-              single.validate(data, { stripUnknown: true })
-            )
-          );
-          data = merge.apply(this, flatten(data));
-        } else {
-          data = await validator.validate(data, { stripUnknown: true });
+      try {
+        if (!isEmpty(validator)) {
+          if (isArray(validator)) {
+            data = await Promise.all(
+              validator.map((single) =>
+                single.validate(data, { stripUnknown: true })
+              )
+            );
+            data = merge.apply(this, flatten(data));
+          } else {
+            data = await validator.validate(data, { stripUnknown: true });
+          }
         }
+      } catch (error) {
+        throw createError(400, error);
       }
 
       const response = await controller(data, req, res);
@@ -51,10 +57,7 @@ export function executeAsync(controller, validator) {
         res.send({ success: true, data: response });
       }
     } catch (error) {
-      // console.log(error);
-      res
-        .status(400)
-        .send({ success: false, error: { message: error.message } });
+      next(error);
     }
   };
 }
