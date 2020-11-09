@@ -2,6 +2,7 @@ export default {
   admin(user, { can, cannot }) {
     can('manage', 'all');
     cannot('edit', 'Loans');
+    cannot('create', 'Loans');
   },
   agent(user, { can, cannot }) {
     can('list', 'Users', { role: 'customer' });

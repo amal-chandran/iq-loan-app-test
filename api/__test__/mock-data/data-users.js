@@ -1,14 +1,14 @@
 export default {
   admin: {
     email: 'amal-admin@gmail.com',
-    password: '#adevoffical',
+    password: '#adevofficial',
   },
   customer: {
     email: 'amal-customer@gmail.com',
-    password: '#adevoffical',
+    password: '#adevofficial',
   },
   agent: {
     email: 'amal-agent@gmail.com',
-    password: '#adevoffical',
+    password: '#adevofficial',
   },
 };

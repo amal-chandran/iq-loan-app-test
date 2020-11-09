@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Loans', {
+    await queryInterface.createTable('loans', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,19 +12,26 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       status: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('NEW', 'REJECTED', 'APPROVED'),
+        defaultValue: 'NEW',
       },
       status_dates: {
         type: Sequelize.JSONB,
+        defaultValue: {
+          new: new Date().toISOString(),
+          rejected: null,
+          approved: null,
+        },
       },
       interest: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL,
       },
       principal_amount: {
         type: Sequelize.BIGINT,
       },
       interest_type: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('REDUCING', 'FIXED'),
+        defaultValue: 'FIXED',
       },
       createdby: {
         type: Sequelize.INTEGER,
