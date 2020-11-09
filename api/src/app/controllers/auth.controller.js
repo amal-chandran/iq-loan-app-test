@@ -11,7 +11,6 @@ export default class AuthController {
   login = async ({ email, password }) => {
     const { token, user } = await this.service.login(email, password);
     const userAbility = defineRulesFor(user);
-    console.log(userAbility);
     return {
       token,
       user: pick(user, ['id', 'name', 'email', 'role']),

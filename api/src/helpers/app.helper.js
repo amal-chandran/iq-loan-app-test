@@ -51,8 +51,10 @@ export function executeAsync(controller, validator) {
         res.send({ success: true, data: response });
       }
     } catch (error) {
-      console.log(error);
-      res.send({ success: false, error: { message: error.message } });
+      // console.log(error);
+      res
+        .status(400)
+        .send({ success: false, error: { message: error.message } });
     }
   };
 }

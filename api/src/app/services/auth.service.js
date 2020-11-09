@@ -30,7 +30,7 @@ export default class AuthService {
       },
     });
 
-    if (!isEmpty(result)) throw new Error('Email is already registerd');
+    if (!isEmpty(result)) throw new Error('Email is already registered');
 
     const newUser = new this.model(data);
 

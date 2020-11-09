@@ -41,7 +41,7 @@ export default class BaseService {
       'list'
     );
 
-    console.log(accessControlQuery);
+    // console.log(accessControlQuery);
 
     return await this.model.paginate({
       include,
