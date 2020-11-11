@@ -23,7 +23,7 @@ const LoanForm = ({
   type,
 }) => {
   useEffect(() => {
-    if (type === 'edit') loadPickerList(get(initialValues, 'createdBy.name'));
+    if (type === 'edit') loadPickerList(get(initialValues, 'createdFor.name'));
   }, [initialValues, loadPickerList, type]);
 
   return (
