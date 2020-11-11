@@ -21,5 +21,5 @@ export const LoansUpdateSchema = yup.object().shape({
 });
 
 export const LoansStatusSchema = yup.object().shape({
-  status: yup.string().required(),
+  status: yup.string().oneOf(['NEW', 'APPROVED', 'REJECTED']).required(),
 });

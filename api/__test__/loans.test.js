@@ -12,6 +12,7 @@ describe('Loans API', () => {
   const userRoles = ['admin', 'agent', 'customer'];
   const notPermitedToEditCreate = ['admin', 'customer'];
   const permitedToDelete = ['admin', 'agent'];
+  const notPermitedToSetStatus = ['customer', 'agent'];
 
   const customerLoans = [
     ['customer', [1, 2, 3]],
@@ -160,6 +161,7 @@ describe('Loans API', () => {
       expect(response.body).toHaveProperty('data');
     });
   });
+
   describe('Loans Edit API', () => {
     beforeEach(async () => {
       loansTestData.newLoanData = {
@@ -295,6 +297,61 @@ describe('Loans API', () => {
         'error.message',
         'Not Authorizated to delete Loans'
       );
+    });
+  });
+
+  describe('Loans Set-Status API', () => {
+    beforeEach(async () => {
+      loansTestData.newLoanData = {
+        tenure: 24,
+        interest: 12,
+        principal_amount: 10000,
+        interest_type: 'FIXED',
+        createdfor: 3,
+      };
+
+      const response = await request(app)
+        .post(`/api/v1/loans`)
+        .set('Authorization', tokenToHeader(loansTestData.auth.agent))
+        .send(loansTestData.newLoanData);
+      loansTestData.newLoanData.id = response.body.data.id;
+    });
+
+    it('should fail to set-status loans when no auth header is set', async () => {
+      const response = await request(app)
+        .patch(`/api/v1/loans/${loansTestData.newLoanData.id}/set-status`)
+        .send(loansTestData.newLoanData);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toHaveProperty('success', false);
+      expect(response.body).toHaveProperty('error.message', 'Unauthorized');
+    });
+
+    for (const selectedRole of notPermitedToSetStatus) {
+      it(`should fail to set-status loans when ${selectedRole} access`, async () => {
+        const response = await request(app)
+          .patch(`/api/v1/loans/${loansTestData.newLoanData.id}/set-status`)
+          .set('Authorization', tokenToHeader(loansTestData.auth[selectedRole]))
+          .send(loansTestData.newLoanData);
+
+        expect(response.status).toBe(403);
+        expect(response.body).toHaveProperty('success', false);
+        expect(response.body).toHaveProperty(
+          'error.message',
+          'Not Authorizated to set-status Loans'
+        );
+      });
+    }
+
+    it(`should able to set-status when admin access`, async () => {
+      const response = await request(app)
+        .patch(`/api/v1/loans/${loansTestData.newLoanData.id}/set-status`)
+        .set('Authorization', tokenToHeader(loansTestData.auth.admin))
+        .send({ status: 'APPROVED' });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('data');
     });
   });
 });

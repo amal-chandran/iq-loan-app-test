@@ -1,5 +1,5 @@
 import { ForbiddenError, subject } from '@casl/ability';
-import { assign, isEmpty } from 'lodash';
+import { assign, isEmpty, set, toLower } from 'lodash';
 import BaseService from './base.service';
 
 export default class LoansService extends BaseService {
@@ -19,6 +19,8 @@ export default class LoansService extends BaseService {
       'set-status',
       subject(this.model.model_name, result)
     );
+
+    set(result, `status_dates.${toLower(status)}`, new Date());
 
     result = assign(result, { status });
 
