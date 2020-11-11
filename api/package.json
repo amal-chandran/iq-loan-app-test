@@ -8,7 +8,7 @@
     "clean": "rimraf ./dest",
     "build:all": "run-s clean build",
     "build:run": "run-s build:all start",
-    "start:dev": "nodemon  --exec npm run build:run",
+    "start:dev": "cross-env NODE_ENV=development nodemon  --exec npm run build:run",
     "db:clean": "npx sequelize-cli db:drop && npx sequelize-cli db:create",
     "db:migrate": "npx sequelize-cli db:migrate",
     "db:seed": "npx sequelize-cli db:seed:all",

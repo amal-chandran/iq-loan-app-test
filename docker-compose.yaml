@@ -12,8 +12,15 @@ services:
       - "8000:8000"
     environment:
       - NODE_ENV=development
-      - DEV_DB_HOSTNAME=db
-      - DEV_DB_NAME=postgres
+      - JWT_KEY=CvRwumWVwekKBPQm
+      - APP_PORT=8000
+      - APP_URL='http://localhost:8000'
+      - DB_PASSWORD=postgres
+      - DB_USERNAME=postgres
+      - DB_NAME=postgres
+      - DB_HOSTNAME=db
+      - DB_PORT=5432
+
     depends_on:
       - db
   client:
@@ -27,8 +34,11 @@ services:
     command: ["sh", "-c", "./scripts/wait-for.sh db:5432 -- npm run db:preload"]
     environment:
       - NODE_ENV=development
-      - DEV_DB_HOSTNAME=db
-      - DEV_DB_NAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_USERNAME=postgres
+      - DB_NAME=postgres
+      - DB_HOSTNAME=db
+      - DB_PORT=5432
     links:
       - db
     depends_on:

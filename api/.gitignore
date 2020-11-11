@@ -148,3 +148,6 @@ dist
 
 dest
 yarn.lock
+.env.development
+.env.production
+.env.test

@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 services:
   db:
     image: postgres
@@ -9,28 +9,37 @@ services:
   api:
     build: ./api
     ports:
-      - '8000:8000'
+      - "8000:8000"
     environment:
       - NODE_ENV=test
-      - TEST_DB_HOSTNAME=db
-      - TEST_DB_NAME=postgres
+      - JWT_KEY=CvRwumWVwekKBPQm
+      - APP_PORT=8000
+      - APP_URL='http://localhost:8000'
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+      - DB_HOSTNAME=db
+      - DB_PORT=5432
     command:
-      ['sh', '-c', './scripts/wait-for.sh db:5432 -- npm run test-docker']
+      ["sh", "-c", "./scripts/wait-for.sh db:5432 -- npm run test-docker"]
     depends_on:
       - db
   client:
     build: ./client
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       - api
   migration:
     build: ./api
-    command: ['sh', '-c', './scripts/wait-for.sh db:5432 -- npm run db:preload']
+    command: ["sh", "-c", "./scripts/wait-for.sh db:5432 -- npm run db:preload"]
     environment:
       - NODE_ENV=test
-      - TEST_DB_HOSTNAME=db
-      - TEST_DB_NAME=postgres
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+      - DB_HOSTNAME=db
+      - DB_PORT=5432
     links:
       - db
     depends_on:
