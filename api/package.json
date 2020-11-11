@@ -46,6 +46,7 @@
     "sequelice-query": "^1.0.3",
     "sequelize": "^6.3.5",
     "sequelize-paginate": "^1.1.6",
+    "sequelize-version": "^0.0.58",
     "sift": "^13.3.5",
     "slugify": "^1.4.5",
     "uuid": "^8.3.1",

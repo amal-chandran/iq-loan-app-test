@@ -1,6 +1,8 @@
 'use strict';
 const { Model, DataTypes } = require('sequelize');
 
+const Version = require('sequelize-version');
+
 module.exports = (sequelize) => {
   class Loans extends Model {
     static associate(models) {
@@ -12,6 +14,9 @@ module.exports = (sequelize) => {
         as: 'createdFor',
         foreignKey: 'createdfor',
       });
+    }
+    static versionsModel() {
+      return new Version(this);
     }
   }
 

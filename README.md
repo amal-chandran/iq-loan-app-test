@@ -11,15 +11,15 @@ A simple loan management application with three "customer", "agent" and "admin".
 - Postgres (10)
 - build-essential(in Ubuntu/Linux)
 
-  or
+  OR
 
 - Docker (19.03.13)
 - Docker-Compose (1.26.2)
 
 ## Setup
 
-- Open http://localhost:3000 to start
-- API Endpoint is on http://localhost:8000
+- Open to start http://localhost:3000
+- API Endpoint http://localhost:8000
 
 **Docker Setup**
 

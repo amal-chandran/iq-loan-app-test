@@ -34,7 +34,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          name: 'Customer',
+          name: 'Customer 2',
           email: 'amal-customer-2@gmail.com',
           password,
           role: 'customer',
